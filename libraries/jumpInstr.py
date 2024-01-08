@@ -1,0 +1,1 @@
+jumpInstr = ['beqz', 'j', 'bge', 'ble', 'bnez', 'bgt']
