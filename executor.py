@@ -221,7 +221,7 @@ def lb(cod_bin):
 
 
 def sb(cod_bin):
-    print("sb")
+    #print("sb")
     # global strByte
     regSursa = decReg(cod_bin)
     offset = decIntVal(cod_bin)
@@ -229,17 +229,22 @@ def sb(cod_bin):
     valSursa = readRegVal(regSursa)
     valDest = readRegVal(regDest)
     strByte = intToByte(valSursa)
+    print (valSursa)
     indexByte = (offset + valDest) * 8
     memory = cod_bin[register_file['cml']:]
-    cod_bin_start = memory[:indexByte]
-    cod_bin_end = memory[indexByte + 9:]
-    memory = cod_bin_start + strByte + cod_bin_end
+    memory_start = memory[:indexByte]
+    memory_end = memory[indexByte + 8:]
+    memory = memory_start + strByte + memory_end
     cod_bin = cod_bin[:register_file['cml']] + memory
+    print (memory)
 
-    print("sbb")
+    #print("sbb")
     with open("ram.txt", 'w') as file:
-        file.write(cod_bin)
-    return 0
+        for char in cod_bin:
+            if char in ['0', '1']:
+                file.write(char)
+            elif char == '\0':
+                file.write('0')
 
 
 def call():
