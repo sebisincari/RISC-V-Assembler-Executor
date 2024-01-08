@@ -4,7 +4,6 @@ from libraries.jumpInstr import jumpInstr
 
 labels = {}
 
-
 def label_adress(assembly_code):
     section_index = 0
     adress = 0
@@ -52,9 +51,6 @@ def write_code(file, assembly_code):
             if ":" in tokens[0]:
                 section_index += 1
             elif tokens[0] in opcodes:
-                # Spatiile sunt pentru a intelege mai bine fiecare sir binar ce
-                # reprezinta. Insa ele trebuie eliminate, iar in binar sa fie un
-                # sir continuu de biti.
                 file.write(opcodes[tokens[0]])
                 for token in tokens[1:]:
                     if token in registers:

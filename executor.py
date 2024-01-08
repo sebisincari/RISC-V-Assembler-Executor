@@ -1,5 +1,4 @@
 from libraries.registers import registers
-from bitstring import BitArray
 
 
 def creareRegFile(file_path='register_file.txt'):
