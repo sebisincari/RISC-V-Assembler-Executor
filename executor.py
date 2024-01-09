@@ -132,9 +132,9 @@ def intToByte(val):
 
 def addi():
     global cod_bin
-    regD = decReg()
-    reg1 = decReg()
-    val = decIntVal()
+    regD = decReg(cod_bin)
+    reg1 = decReg(cod_bin)
+    val = decIntVal(cod_bin)
     vReg1 = readRegVal(reg1)
     vRegD = vReg1 + val
     writeRegVal(regD, vRegD)
@@ -144,13 +144,13 @@ def j():
     global cod_bin
     global index
     # print(decIndexJmp(cod_bin))
-    index = decIndexJmp() - 1
+    index = decIndexJmp(cod_bin) - 1
 
 
 def li():
     global cod_bin
-    regD = decReg()
-    newVal = decIntVal()
+    regD = decReg(cod_bin)
+    newVal = decIntVal(cod_bin)
     writeRegVal(regD, newVal)
 
 
@@ -162,9 +162,9 @@ def ret():
 
 def add():
     global cod_bin
-    regD = decReg()
-    reg1 = decReg()
-    reg2 = decReg()
+    regD = decReg(cod_bin)
+    reg1 = decReg(cod_bin)
+    reg2 = decReg(cod_bin)
     vReg1 = readRegVal(reg1)
     vReg2 = readRegVal(reg2)
     vRegD = vReg1 + vReg2
@@ -178,8 +178,8 @@ def bge():
 def beqz():
     global cod_bin
     global index
-    regInterogat = decReg()
-    indexSalt = decIndexJmp()
+    regInterogat = decReg(cod_bin)
+    indexSalt = decIndexJmp(cod_bin)
     regVal = readRegVal(regInterogat)
     # print(indexSalt)
     # print(regVal)
@@ -189,8 +189,8 @@ def beqz():
 
 def mv():
     global cod_bin
-    regDest = decReg()
-    regSursa = decReg()
+    regDest = decReg(cod_bin)
+    regSursa = decReg(cod_bin)
     val = readRegVal(regSursa)
     # print(regDest)
     # print(val)
@@ -208,10 +208,9 @@ def fmvs():
 def lb():
     global cod_bin
     # global strByte
-    print(cod_bin)
-    regDest = decReg()
-    offset = decIntVal()
-    regSursa = decReg()
+    regDest = decReg(cod_bin)
+    offset = decIntVal(cod_bin)
+    regSursa = decReg(cod_bin)
     vRegSursa = readRegVal(regSursa)
     memory = cod_bin[register_file['cml']:]
     # a0-t1*8
@@ -237,10 +236,9 @@ def sb():
     #print("sb")
     # global strByte
     global cod_bin
-    
-    regSursa = decReg()
-    offset = decIntVal()
-    regDest = decReg()
+    regSursa = decReg(cod_bin)
+    offset = decIntVal(cod_bin)
+    regDest = decReg(cod_bin)
     valSursa = readRegVal(regSursa)
     valDest = readRegVal(regDest)
     strByte = str(intToByte(valSursa))
