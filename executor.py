@@ -1,6 +1,5 @@
 from libraries.registers import registers
 
-
 def creareRegFile(file_path='register_file.txt'):
     global register_file
     global reg_file_init

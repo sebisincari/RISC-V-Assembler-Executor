@@ -1,15 +1,14 @@
 .section .text
-.global stringcopy
-stringcopy:
-    # a0 = destination
-    # a1 = source
-1:
-    lb      t0, 0(a1)    # Load a char from the src
-    sb      t0, 0(a0)    # Store the value of the src
-    beqz    t0, 1f       # Check if it's 0
-
-    addi    a0, a0, 1    # Advance destination one byte
-    addi    a1, a1, 1    # Advance source one byte
-    j       1b           # Go back to the start of the loop
-1:
-    ret                  # Return back via the return address
+.global strlen
+strlen:
+    # a0 = const char *str
+    li     t0, 0         # i = 0
+1: # Start of for loop
+    add    t1, t0, a0    # Add the byte offset for str[i]
+    lb     t1, 0(t1)     # Dereference str[i]
+    beqz   t1, 1f        # if str[i] == 0, break for loop
+    addi   t0, t0, 1     # Add 1 to our iterator
+    j      1b            # Jump back to condition (1 backwards)
+1: # End of for loop
+    mv     a0, t0        # Move t0 into a0 to return
+    ret                  # Return back via the return address register
