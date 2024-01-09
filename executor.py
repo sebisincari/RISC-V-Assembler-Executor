@@ -18,8 +18,9 @@ def updateRegFile(output_file='register_file.txt'):
             file.write(f"{key} {value}\n")
 
 
-def decode(cod_bin):
+def decode():
     global index
+    global cod_bin
     # print(len(cod_bin))
     # lenght = len(cod_bin)
     while index < register_file['cml'] - 1:
@@ -30,7 +31,7 @@ def decode(cod_bin):
             # print(index)
         #print(instructiune)
         # print(index)
-        functii[instructiune](cod_bin)
+        functii[instructiune]()
 
         # apel functie gasita
 
@@ -39,11 +40,12 @@ def readBin():
     with open('ram.txt', 'r') as fisier:
         cod_bin = fisier.readline()
     # print(cod_bin[len()])
-    decode(cod_bin)
+    decode()
 
 
-def decReg(cod_bin):
+def decReg():
     global index
+    global cod_bin
     gasit = 0
     binRegCurent = ""
     cheieRegCurent = ""
@@ -70,8 +72,9 @@ def writeRegVal(cheieReg, valReg):
     register_file[cheieReg] = valReg
 
 
-def decIntVal(cod_bin):
+def decIntVal():
     global index
+    global cod_bin
     num = 0
     aux = 1
     # print(index)
@@ -88,8 +91,9 @@ def decIntVal(cod_bin):
     return num
 
 
-def decIndexJmp(cod_bin):
+def decIndexJmp():
     global index
+    global cod_bin
     num = 0
     aux = 1
     # print(index)
@@ -126,7 +130,8 @@ def intToByte(val):
     return byte
 
 
-def addi(cod_bin):
+def addi():
+    global cod_bin
     regD = decReg(cod_bin)
     reg1 = decReg(cod_bin)
     val = decIntVal(cod_bin)
@@ -135,24 +140,28 @@ def addi(cod_bin):
     writeRegVal(regD, vRegD)
 
 
-def j(cod_bin):
+def j():
+    global cod_bin
     global index
     # print(decIndexJmp(cod_bin))
     index = decIndexJmp(cod_bin) - 1
 
 
-def li(cod_bin):
+def li():
+    global cod_bin
     regD = decReg(cod_bin)
     newVal = decIntVal(cod_bin)
     writeRegVal(regD, newVal)
 
 
-def ret(cod_bin):
+def ret():
     global index
+    global cod_bin
     index = register_file['cml'] + 1
 
 
-def add(cod_bin):
+def add():
+    global cod_bin
     regD = decReg(cod_bin)
     reg1 = decReg(cod_bin)
     reg2 = decReg(cod_bin)
@@ -166,7 +175,8 @@ def bge():
     return 0
 
 
-def beqz(cod_bin):
+def beqz():
+    global cod_bin
     global index
     regInterogat = decReg(cod_bin)
     indexSalt = decIndexJmp(cod_bin)
@@ -177,7 +187,8 @@ def beqz(cod_bin):
         index = indexSalt - 1
 
 
-def mv(cod_bin):
+def mv():
+    global cod_bin
     regDest = decReg(cod_bin)
     regSursa = decReg(cod_bin)
     val = readRegVal(regSursa)
@@ -194,7 +205,8 @@ def fmvs():
     return 0
 
 
-def lb(cod_bin):
+def lb():
+    global cod_bin
     # global strByte
     regDest = decReg(cod_bin)
     offset = decIntVal(cod_bin)
@@ -220,16 +232,17 @@ def lb(cod_bin):
     writeRegVal(regDest, num)
 
 
-def sb(cod_bin):
+def sb():
     #print("sb")
     # global strByte
+    global cod_bin
     regSursa = decReg(cod_bin)
     offset = decIntVal(cod_bin)
     regDest = decReg(cod_bin)
     valSursa = readRegVal(regSursa)
     valDest = readRegVal(regDest)
     strByte = str(intToByte(valSursa))
-    print (valSursa)
+    # print (valSursa)
     indexByte = (offset + valDest) * 8
     memory = str(cod_bin[register_file['cml']:])
     memory_start = str(memory[:indexByte])
@@ -238,15 +251,10 @@ def sb(cod_bin):
     #print(strByte)
     #print(memory_start + strByte)
 
-    memory = ""
-    memory = ''.join([memory,memory_start])
-    print(memory)
-    memory = ''.join([memory,strByte])
-    print(memory)
-    memory = ''.join([memory,memory_end])
+    memory=memory_start+strByte+memory_end
 
-    cod_bin = str(cod_bin[:register_file['cml']])
-    cod_bin = ''.join([cod_bin,memory])
+    cod_bin=cod_bin[:register_file['cml']]+memory
+ 
     #print (memory_start + memory_end)
     
 
@@ -355,6 +363,7 @@ functii = {'111': addi, '1101': j, '1100': li, '1011': ret, '1000': add, '0100':
 register_file = {}
 reg_file_init = {}
 index = -1
+cod_bin = ""
 # strByte = ""
 creareRegFile()
 readBin()
