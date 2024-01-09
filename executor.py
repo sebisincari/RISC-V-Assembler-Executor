@@ -178,7 +178,16 @@ def add():
 
 
 def bge():
-    return 0
+    global cod_bin
+    global index
+    reg1 = decReg()
+    reg2 = decReg()
+    vReg1 = readRegVal(reg1)
+    vReg2 = readRegVal(reg2)
+    label = decIndexJmp() 
+    if vReg1 >= vReg2:
+        index=label-1
+    
 
 
 def beqz():
@@ -308,7 +317,15 @@ def srai():
 
 
 def ble():
-    return 0
+    global cod_bin
+    global index
+    reg1 = decReg()
+    reg2 = decReg()
+    vReg1 = readRegVal(reg1)
+    vReg2 = readRegVal(reg2)
+    label = decIndexJmp() 
+    if vReg1 <= vReg2:
+        index=label-1
 
 
 def fsubd():
@@ -336,7 +353,15 @@ def sub():
 
 
 def bnez():
-    return 0
+    global cod_bin
+    global index
+    regInterogat = decReg()
+    indexSalt = decIndexJmp()
+    regVal = readRegVal(regInterogat)
+    # print(indexSalt)
+    # print(regVal)
+    if regVal != 0:
+        index = indexSalt - 1
 
 
 def faddd():
@@ -348,7 +373,15 @@ def fsqrtd():
 
 
 def bgt():
-    return 0
+    global cod_bin
+    global index
+    reg1 = decReg()
+    reg2 = decReg()
+    vReg1 = readRegVal(reg1)
+    vReg2 = readRegVal(reg2)
+    label = decIndexJmp() 
+    if vReg1 > vReg2:
+        index=label-1
 
 
 def fmvsx():

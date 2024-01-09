@@ -1,15 +1,27 @@
 .section .text
-.global stringcopy
-stringcopy:
-    # a0 = destination
-    # a1 = source
+.global strncpy
+strncpy:
+    # a0 = char *dst
+    # a1 = const char *src
+    # a2 = unsigned long n
+    # t0 = i
+    li      t0, 0        # i = 0
+1:  # first for loop
+    bge     t0, a2, 1f   # break if i >= n
+    add     t1, a1, t0   # src + i
+    lb      t1, 0(t1)    # t1 = src[i]
+    beqz    t1, 1f       # break if src[i] == '\0'
+    add     t2, a0, t0   # t2 = dst + i
+    sb      t1, 0(t2)    # dst[i] = src[i]
+    addi    t0, t0, 1    # i++
+    j       1b           # back to beginning of loop
+1:  # second for loop
+    bge     t0, a2, 1f   # break if i >= n
+    add     t1, a0, t0   # t1 = dst + i
+    sb      zero, 0(t1)  # dst[i] = 0
+    addi    t0, t0, 1    # i++
+    j       1b           # back to beginning of loop
 1:
-    lb      t0, 0(a1)    # Load a char from the src
-    sb      t0, 0(a0)    # Store the value of the src
-    beqz    t0, 1f       # Check if it's 0
-
-    addi    a0, a0, 1    # Advance destination one byte
-    addi    a1, a1, 1    # Advance source one byte
-    j       1b           # Go back to the start of the loop
-1:
-    ret                  # Return back via the return address
+    # we don't have to move anything since
+    # a0 hasn't changed.
+    ret                  # return via return address register
