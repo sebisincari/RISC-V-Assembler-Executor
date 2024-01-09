@@ -23,7 +23,11 @@ def decode():
     global cod_bin
     # print(len(cod_bin))
     # lenght = len(cod_bin)
-    while index < register_file['cml'] - 1:
+    print(index)
+    print(register_file['cml'])
+    print(len(cod_bin))
+    while index <= register_file['cml'] - 1:
+        
         instructiune = ""
         while instructiune not in functii:
             index += 1
@@ -37,6 +41,7 @@ def decode():
 
 
 def readBin():
+    global cod_bin
     with open('ram.txt', 'r') as fisier:
         cod_bin = fisier.readline()
     # print(cod_bin[len()])
@@ -115,6 +120,7 @@ def readByte(indexStart, memory):
     # print(indexStart)
     # print(len(cod_bin))
     for i in range(8):
+     
         if indexStart <= len(memory) - 1:
             strbyte += memory[indexStart]
             indexStart += 1
@@ -208,9 +214,10 @@ def fmvs():
 def lb():
     global cod_bin
     # global strByte
-    regDest = decReg(cod_bin)
-    offset = decIntVal(cod_bin)
-    regSursa = decReg(cod_bin)
+    print(cod_bin)
+    regDest = decReg()
+    offset = decIntVal()
+    regSursa = decReg()
     vRegSursa = readRegVal(regSursa)
     memory = cod_bin[register_file['cml']:]
     # a0-t1*8
