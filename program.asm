@@ -12,7 +12,7 @@ strrev:
 
     # Get the size of the string
     mv      s1, a0
-    call    scanf
+    call    strlen
     srai    t0, a0, 1     # Divide sz by 2
     li      t1, 0         # i = 0
 1:  # for loop
