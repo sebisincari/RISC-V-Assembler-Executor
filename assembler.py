@@ -3,6 +3,12 @@ from libraries.registers import registers
 from libraries.jumpInstr import jumpInstr
 
 labels = {}
+functions = {
+    "strlen": "00",
+    "printf": "01",
+    "scanf": "10",
+    "cfunc": "11"
+}
 
 def label_adress(assembly_code):
     section_index = 0
@@ -61,6 +67,8 @@ def write_code(file, assembly_code):
                         token = token.rstrip(")").split("(")
                         file.write("{:032b}".format((int(token[0]) + (1 << 32)) % (1 << 32)))
                         file.write(registers[token[1]])
+                    elif token in functions:
+                        file.write(functions[token])
                     else:
                         file.write("{:032b}".format((int(token) + (1 << 32)) % (1 << 32)))
             else:

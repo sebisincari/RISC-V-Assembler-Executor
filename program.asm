@@ -1,27 +1,35 @@
 .section .text
-.global strncpy
-strncpy:
-    # a0 = char *dst
-    # a1 = const char *src
-    # a2 = unsigned long n
-    # t0 = i
-    li      t0, 0        # i = 0
-1:  # first for loop
-    bge     t0, a2, 1f   # break if i >= n
-    add     t1, a1, t0   # src + i
-    lb      t1, 0(t1)    # t1 = src[i]
-    beqz    t1, 1f       # break if src[i] == '\0'
-    add     t2, a0, t0   # t2 = dst + i
-    sb      t1, 0(t2)    # dst[i] = src[i]
-    addi    t0, t0, 1    # i++
-    j       1b           # back to beginning of loop
-1:  # second for loop
-    bge     t0, a2, 1f   # break if i >= n
-    add     t1, a0, t0   # t1 = dst + i
-    sb      zero, 0(t1)  # dst[i] = 0
-    addi    t0, t0, 1    # i++
-    j       1b           # back to beginning of loop
+.global strrev
+strrev:
+    # s1 = str
+    # a0 = sz
+    # t0 = sz / 2
+    # t1 = i
+    # Enter stack frame
+    addi    sp, sp, -16
+    sd      ra, 0(sp)
+    sd      s1, 8(sp)
+
+    # Get the size of the string
+    mv      s1, a0
+    call    scanf
+    srai    t0, a0, 1     # Divide sz by 2
+    li      t1, 0         # i = 0
+1:  # for loop
+    bge     t1, t0, 1f
+    add     t2, s1, t1    # str + i
+    sub     t3, a0, t1    # sz - i
+    addi    t3, t3, -1    # sz - i - 1
+    add     t3, t3, s1    # str + sz - i - 1
+    lb      t4, 0(t2)     # str[i]
+    lb      t5, 0(t3)     # str[sz - i - 1]
+    sb      t4, 0(t3)     # swap
+    sb      t5, 0(t2)
+    addi    t1, t1, 1
+    j       1b
 1:
-    # we don't have to move anything since
-    # a0 hasn't changed.
-    ret                  # return via return address register
+    # Leave stack frame
+    ld      s1, 8(sp)
+    ld      ra, 0(sp)
+    addi    sp, sp, 16
+    ret
