@@ -1,3 +1,4 @@
+from operator import index
 from libraries.registers import registers
 
 def creareRegFile(file_path='register_file.txt'):
@@ -84,13 +85,16 @@ def decIntVal():
     aux = 1
     # print(index)
     index += 32
-    for i in range(32):
+    for i in range(31):
         if index < register_file['cml'] - 1:
             if cod_bin[index] == '1':
                 num += aux
         aux *= 2
         index -= 1
     # print(index)
+    if cod_bin[index] == '1':
+        num -= 2**32
+    index -= 1
     index += 32
     # print("  " + str(num))
     return num
@@ -100,10 +104,12 @@ def decDoubleValMem(index, memory):
     num = 0
     aux = 1
     # print(index)
+    index +=63
     for i in range(64):
         if memory[index] == '1':
             num += aux
         aux *= 2
+        index -= 1
     # print(index)
     # print("  " + str(num))
     return num
@@ -357,7 +363,7 @@ def sb():
             if char in ['0', '1']:
                 file.write(char)
             elif char == '\0':
-                file.write('0')
+                file.write('0')  
 
 def strlen():
     global cod_bin
@@ -367,7 +373,7 @@ def strlen():
     bazaStiva = register_file['sp']
     bazaStiva *= 8
     startstr = readDouble(vfStiva-64,memory) 
-    startstr = decDoubleValMem(startstr,0)
+    startstr = decDoubleValMem(0,startstr)
     ibyte = startstr
     byte = readByte(ibyte,memory)
     knt = 1
