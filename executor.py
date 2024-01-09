@@ -10,7 +10,7 @@ def creareRegFile(file_path='register_file.txt'):
             key, value = line.strip().split()
             register_file[key] = int(value)
             reg_file_init[key] = int(value)
-    print(reg_file_init)
+    #print(reg_file_init)
 
 
 def updateRegFile(output_file='register_file.txt'):
@@ -29,7 +29,7 @@ def decode(cod_bin):
             index += 1
             instructiune += cod_bin[index]
             # print(index)
-        print(instructiune)
+        #print(instructiune)
         # print(index)
         functii[instructiune](cod_bin)
 
@@ -121,8 +121,9 @@ def readByte(indexStart, memory):
 def intToByte(val):
     byte = ""
     for i in range(8):
-        byte = chr(val & 1) + byte
+        byte = ''.join([str(val & 1),byte])
         val = (val >> 1)
+    #print(byte)
     return byte
 
 
@@ -204,7 +205,7 @@ def lb(cod_bin):
     # a0-t1*8
     # strByte = ""
     indexByte = (offset + vRegSursa) * 8
-    print(indexByte)
+    #print(indexByte)
     # print(int(vRegSursa))
     # if indexByte < len(cod_bin):
     strByte = readByte(indexByte, memory)
@@ -212,7 +213,7 @@ def lb(cod_bin):
     num = 0
     # print(strByte)
     # strByte = strByte[::-1]
-    print(strByte)
+    #print(strByte)
     for i in range(7, -1, -1):
         num += pow2 * int(strByte[i])
         pow2 *= 2
@@ -228,15 +229,27 @@ def sb(cod_bin):
     regDest = decReg(cod_bin)
     valSursa = readRegVal(regSursa)
     valDest = readRegVal(regDest)
-    strByte = intToByte(valSursa)
+    strByte = str(intToByte(valSursa))
     print (valSursa)
     indexByte = (offset + valDest) * 8
-    memory = cod_bin[register_file['cml']:]
-    memory_start = memory[:indexByte]
-    memory_end = memory[indexByte + 8:]
-    memory = memory_start + strByte + memory_end
-    cod_bin = cod_bin[:register_file['cml']] + memory
-    print (memory)
+    memory = str(cod_bin[register_file['cml']:])
+    memory_start = str(memory[:indexByte])
+    memory_end = str(memory[indexByte + 8:])
+    #print(indexByte)
+    #print(strByte)
+    #print(memory_start + strByte)
+
+    memory = ""
+    memory = ''.join([memory,memory_start])
+    print(memory)
+    memory = ''.join([memory,strByte])
+    print(memory)
+    memory = ''.join([memory,memory_end])
+
+    cod_bin = str(cod_bin[:register_file['cml']])
+    cod_bin = ''.join([cod_bin,memory])
+    #print (memory_start + memory_end)
+    
 
     #print("sbb")
     with open("ram.txt", 'w') as file:

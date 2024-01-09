@@ -1,6 +1,10 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\libraries",
+    "\\resources",
+    "\\tools"
   ],
+  "SelectedNode": "\\executor.py",
   "PreviewInSolutionExplorer": false
 }
