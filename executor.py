@@ -1,3 +1,4 @@
+from operator import index
 from libraries.registers import registers
 
 def creareRegFile(file_path='register_file.txt'):
@@ -84,14 +85,32 @@ def decIntVal():
     aux = 1
     # print(index)
     index += 32
-    for i in range(32):
+    for i in range(31):
         if index < register_file['cml'] - 1:
             if cod_bin[index] == '1':
                 num += aux
         aux *= 2
         index -= 1
     # print(index)
+    if cod_bin[index] == '1':
+        num -= 2**32
+    index -= 1
     index += 32
+    # print("  " + str(num))
+    return num
+
+
+def decDoubleValMem(index, memory):
+    num = 0
+    aux = 1
+    # print(index)
+    index +=63
+    for i in range(64):
+        if memory[index] == '1':
+            num += aux
+        aux *= 2
+        index -= 1
+    # print(index)
     # print("  " + str(num))
     return num
 
@@ -113,6 +132,18 @@ def decIndexJmp():
     index += 16
     # print("  " + str(num))
     return num
+ 
+
+def readDouble(indexStart, memory):
+    strbytes = ""
+    # print(indexStart)
+    # print(len(cod_bin))
+    for i in range(64):
+     
+        if indexStart <= len(memory) - 1:
+            strbytes += memory[indexStart]
+            indexStart += 1
+    return strbytes
 
 
 def readByte(indexStart, memory):
@@ -134,6 +165,27 @@ def intToByte(val):
         val = (val >> 1)
     #print(byte)
     return byte
+
+
+def intToDouble(val):
+    bytes = ""
+    for i in range(64):
+        bytes = ''.join([str(val & 1),bytes])
+        val = (val >> 1)
+    #print(bytes)
+    return bytes
+
+
+def decFct():
+    global index
+    global cod_bin
+    global functions
+    index+=1
+    binFct=str(cod_bin[index])
+    index+=1
+    binFct=binFct+str(cod_bin[index])
+    return binFct
+
 
 
 def addi():
@@ -213,7 +265,37 @@ def mv():
 
 
 def sd():
-    return 0
+    global cod_bin
+    
+    regSursa = decReg()
+    offset = decIntVal()
+    regDest = decReg()
+    valSursa = readRegVal(regSursa)
+    valDest = readRegVal(regDest)
+    strByte = str(intToDouble(valSursa))
+    # print (valSursa)
+    indexByte = (offset + valDest) * 8
+    memory = str(cod_bin[register_file['cml']:])
+    memory_start = str(memory[:indexByte])
+    memory_end = str(memory[indexByte + 64:])
+    #print(indexByte)
+    #print(strByte)
+    #print(memory_start + strByte)
+
+    memory=memory_start+strByte+memory_end
+
+    cod_bin=cod_bin[:register_file['cml']]+memory
+ 
+    #print (memory_start + memory_end)
+    
+
+    #print("sbb")
+    with open("ram.txt", 'w') as file:
+        for char in cod_bin:
+            if char in ['0', '1']:
+                file.write(char)
+            elif char == '\0':
+                file.write('0')
 
 
 def fmvs():
@@ -281,15 +363,60 @@ def sb():
             if char in ['0', '1']:
                 file.write(char)
             elif char == '\0':
-                file.write('0')
+                file.write('0')  
+
+def strlen():
+    global cod_bin
+    memory = str(cod_bin[register_file['cml']:])
+    vfStiva = reg_file_init['sp']
+    vfStiva *= 8
+    bazaStiva = register_file['sp']
+    bazaStiva *= 8
+    startstr = readDouble(vfStiva-64,memory) 
+    startstr = decDoubleValMem(0,startstr)
+    ibyte = startstr
+    byte = readByte(ibyte,memory)
+    knt = 1
+    while byte != "00000000":
+        ibyte += 8
+        byte = readByte(ibyte,memory)
+        knt +=1
+    writeRegVal("a0",knt) 
 
 
 def call():
-    return 0
+    binFct=decFct()
+    if binFct == "00":
+        strlen()
+
 
 
 def ld():
-    return 0
+    global cod_bin
+    # global strByte
+    
+    regDest = decReg()
+    offset = decIntVal()
+    regSursa = decReg()
+    vRegSursa = readRegVal(regSursa)
+    memory = cod_bin[register_file['cml']:]
+    # a0-t1*8
+    # strByte = ""
+    indexByte = (offset + vRegSursa) * 8
+    #print(indexByte)
+    # print(int(vRegSursa))
+    # if indexByte < len(cod_bin):
+    strByte = readByte(indexByte, memory)
+    pow2 = 1
+    num = 0
+    # print(strByte)
+    # strByte = strByte[::-1]
+    #print(strByte)
+    for i in range(63, -1, -1):
+        num += pow2 * int(strByte[i])
+        pow2 *= 2
+    # print(num)
+    writeRegVal(regDest, num)
 
 
 def lw():
@@ -313,7 +440,13 @@ def la():
 
 
 def srai():
-    return 0
+    regDest=decReg()
+    regSursa=decReg()
+    vShift=decIntVal()
+    vRegSursa=int(readRegVal(regSursa))
+    vRegDest=vRegSursa>>vShift
+    writeRegVal(regDest, vRegDest)
+
 
 
 def ble():
@@ -349,7 +482,14 @@ def flw():
 
 
 def sub():
-    return 0
+    global cod_bin
+    regD = decReg()
+    reg1 = decReg()
+    reg2 = decReg()
+    vReg1 = readRegVal(reg1)
+    vReg2 = readRegVal(reg2)
+    vRegD = vReg1 - vReg2
+    writeRegVal(regD, vRegD)
 
 
 def bnez():
@@ -401,6 +541,12 @@ functii = {'111': addi, '1101': j, '1100': li, '1011': ret, '1000': add, '0100':
            '101001': slli, '101000': fsw, '011101': la, '011100': srai, '001101': ble, '001100': fsubd, '001111': fmuld,
            '001110': fgts, '001001': flts, '001000': flw, '0001001': sub, '0001000': bnez, '0001011': faddd,
            '0001010': fsqrtd, '0010101': bgt, '0010100': fmvsx, '0010111': fmuls, '0010110': fadds}
+functions = {
+    "strlen": "00",
+    "printf": "01",
+    "scanf": "10",
+    "cfunc": "11"
+}
 register_file = {}
 reg_file_init = {}
 index = -1
