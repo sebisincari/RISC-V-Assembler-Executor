@@ -3,7 +3,7 @@
 ## String Length
 
 ### Registers:
-Set the registers to 0(!except "cml")
+- Set the registers to 0 (!except "cml")
 
 ### Memory:
 Hello world!\0
@@ -15,9 +15,9 @@ The result will be stored in the "a0" register
 ## String Copy
 
 ### Registers:
-Set the "a0" register to 0 (destination adress)
-Set the "a1" register to 12 (source adress)
-Set the rest of the registers to 0(!except "cml")
+- Set the "a0" register to 0 (destination adress)
+- Set the "a1" register to 12 (source adress)
+- Set the rest of the registers to 0 (!except "cml")
 
 ### Memory:
 Hello world!\0Buna lume !\0
@@ -29,10 +29,10 @@ The result will be stored in RAM
 ## String Copy (n bytes)
 
 ### Registers:
-Set the "a0" register to 0 (destination adress)
-Set the "a1" register to 12 (source adress)
-Set the "a2" register to 4 (n)
-Set the rest of the registers to 0(!except "cml")
+- Set the "a0" register to 0 (destination adress)
+- Set the "a1" register to 12 (source adress)
+- Set the "a2" register to 4 (n)
+- Set the rest of the registers to 0 (!except "cml")
 
 ### Memory:
 Hello world!\0Buna lume !\0
