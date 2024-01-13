@@ -35,7 +35,6 @@ def decode():
             index += 1
             instructiune += cod_bin[index]
         index += (8 - lun)
-        print(instructiune)
         functii[instructiune]()
 
 def readBin():
