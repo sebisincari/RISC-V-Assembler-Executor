@@ -24,27 +24,40 @@ def decode():
     global cod_bin
     # print(len(cod_bin))
     # lenght = len(cod_bin)
-    print(index)
-    print(register_file['cml'])
-    print(len(cod_bin))
+    #print(index)
+    #print(register_file['cml'])
+    #print(len(cod_bin))
     while index <= register_file['cml'] - 1:
         
         instructiune = ""
+        
+        index += 8
+        lun = 0
+        for i in range (8):
+            if cod_bin[index] == '1':
+               lun += 2 ** i 
+            print(lun)
+            index -= 1
+        index += 8
+        
+        #print(lun)
         while instructiune not in functii:
             index += 1
             instructiune += cod_bin[index]
             # print(index)
-        #print(instructiune)
+        print(instructiune)
         # print(index)
         functii[instructiune]()
-
+        index += (8 - lun)
         # apel functie gasita
 
 
 def readBin():
     global cod_bin
-    with open('ram.txt', 'r') as fisier:
-        cod_bin = fisier.readline()
+    with open('ram.bin', 'rb') as fisier:
+        cod_bin = fisier.read()
+
+    cod_bin = ''.join(format(byte, '08b') for byte in cod_bin)
     # print(cod_bin[len()])
     decode()
 
@@ -55,6 +68,15 @@ def decReg():
     gasit = 0
     binRegCurent = ""
     cheieRegCurent = ""
+    
+    index += 8
+    lun = 0
+    for i in range (8):
+        if cod_bin[index] == '1':
+            lun += 2 ** i 
+        index -= 1
+    index += 8
+        
     while not gasit:
         index += 1
         binRegCurent += cod_bin[index]
@@ -63,7 +85,7 @@ def decReg():
                 cheieRegCurent = numeReg
                 gasit = 1
                 break
-
+    index += (8 - lun)
     # aici are cheia reg
     return cheieRegCurent
 
@@ -289,13 +311,9 @@ def sd():
     #print (memory_start + memory_end)
     
 
+    with open('ram.bin', 'wb') as file:
+        file.write(bytes(int(cod_bin[i:i+8], 2) for i in range(0, len(cod_bin), 8)))
     #print("sbb")
-    with open("ram.txt", 'w') as file:
-        for char in cod_bin:
-            if char in ['0', '1']:
-                file.write(char)
-            elif char == '\0':
-                file.write('0')
 
 
 def fmvs():
@@ -356,14 +374,9 @@ def sb():
  
     #print (memory_start + memory_end)
     
-
+    with open('ram.bin', 'wb') as file:
+        file.write(bytes(int(cod_bin[i:i+8], 2) for i in range(0, len(cod_bin), 8)))
     #print("sbb")
-    with open("ram.txt", 'w') as file:
-        for char in cod_bin:
-            if char in ['0', '1']:
-                file.write(char)
-            elif char == '\0':
-                file.write('0')  
 
 def strlen():
     global cod_bin
@@ -407,6 +420,7 @@ def ld():
     # print(int(vRegSursa))
     # if indexByte < len(cod_bin):
     strByte = readByte(indexByte, memory)
+    print(strByte)
     pow2 = 1
     num = 0
     # print(strByte)
@@ -554,4 +568,7 @@ cod_bin = ""
 # strByte = ""
 creareRegFile()
 readBin()
+#register_file['a0'] = 1
 updateRegFile()
+
+#print(register_file['a0'])

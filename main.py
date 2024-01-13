@@ -25,6 +25,7 @@ if rezultat.stderr:
 while True:
     raspuns = input("Doriti sa executati binarul?[y/n]: ")
     if (raspuns == "y" or raspuns == "Y"):
+        subprocess.run("python3 executor.py", shell=True, check=True)
         print("\nRAM:")
         comanda = "xxd ram.bin"
         rezultat = subprocess.run(comanda, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
