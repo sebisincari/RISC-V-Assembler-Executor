@@ -1,4 +1,4 @@
-<span style="color: #d17f4b;">RISC-V Assembler and Executor</span>
+# RISC-V Assembler and Executor
 
 ## String Length
 
