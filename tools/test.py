@@ -1,1 +1,0 @@
-# program pentru testarea functionalitatilor
