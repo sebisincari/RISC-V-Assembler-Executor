@@ -1,6 +1,6 @@
 # RISC-V Assembler and Executor
 
-## 1.String Length
+## 1. String Length
 
 ### Registers:
 - Set the registers to 0 (!except "cml")
@@ -12,7 +12,7 @@ Hello world!\0
 ```
 The result will be stored in the "a0" register
 
-## 2.String Copy
+## 2. String Copy
 
 ### Registers:
 - Set the "a0" register to 0 (destination adress)
@@ -26,7 +26,7 @@ Hello world!\0Buna lume !\0
 ```
 The result will be stored in RAM
 
-## 3.String Copy (n bytes)
+## 3. String Copy (n bytes)
 
 ### Registers:
 - Set the "a0" register to 0 (destination adress)
