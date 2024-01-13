@@ -1,14 +1,37 @@
 .section .text
-.global strlen
-strlen:
-    # a0 = const char *str
-    li     t0, 0         # i = 0
-1: # Start of for loop
-    add    t1, t0, a0    # Add the byte offset for str[i]
-    lb     t1, 0(t1)     # Dereference str[i]
-    beqz   t1, 1f        # if str[i] == 0, break for loop
-    addi   t0, t0, 1     # Add 1 to our iterator
-    j      1b            # Jump back to condition (1 backwards)
-1: # End of for loop
-    mv     a0, t0        # Move t0 into a0 to return
-    ret                  # Return back via the return address register
+.global binsearch
+binsearch:
+    # a0 = int arr[]
+    # a1 = int needle
+    # a2 = int size
+    # t0 = mid
+    # t1 = left
+    # t2 = right
+
+    li      t1, 0        # left = 0
+    addi    t2, a2, -1   # right = size - 1
+1: # while loop
+    bgt     t1, t2, 1f   # left > right, break
+    add     t0, t1, t2   # mid = left + right
+    srai    t0, t0, 1    # mid = (left + right) / 2
+
+    # Get the element at the midpoint
+    slli    t4, t0, 2    # Scale the midpoint by 4
+    add     t4, a0, t4   # Get the memory address of arr[mid]
+    lw      t4, 0(t4)    # Dereference arr[mid]
+
+    # See if the needle (a1) > arr[mid] (t3)
+    ble     a1, t4, 2f   # if needle <= t3, we need to check the next condition
+    # If we get here, then the needle is > arr[mid]
+    addi    t1, t0, 1    # left = mid + 1
+    j       1b
+2:
+    bge     a1, t4, 2f   # skip if needle >= arr[mid]
+    # If we get here, then needle < arr[mid]
+    addi    t2, t0, -1   # right = mid - 1
+    j       1b
+2:
+    # If we get here, then needle == arr[mid]
+    mv      a0, t0
+1:
+    ret

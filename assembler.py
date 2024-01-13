@@ -30,16 +30,16 @@ def label_adress(assembly_code):
                         labels[f'section{i}'][tokens[0].rstrip(":") + 'f'] = adress
                 section_index += 1
             elif tokens[0] in opcodes:
-                adress += len(opcodes[tokens[0]])
+                adress += 16
                 for token in tokens[1:]:
                     if token in registers:
-                        adress += len(registers[token])
+                        adress += 16
                     elif ((token[-1] == "f") or (token[-1] == "b")) and (tokens[0] != 'call'):
                         adress += 16
                     elif "(" in token:
                         token = token.rstrip(")").split("(")
                         adress += 32
-                        adress += len(registers[token[1]])
+                        adress += 16
                     else:
                         adress += 32
             else:
@@ -124,7 +124,7 @@ while True:
         print("Fisierul nu exista. Va rugam introduceti un nume de fisier valid.")
 
 label_adress(assembly_code)
-
+print(labels)
 write_code("ram.bin", assembly_code)
 
 # afisare binar
@@ -154,3 +154,4 @@ with open("register_file.txt", "r") as fileregin:
 with open("register_file.txt", "w") as fileregout:
     fileregout.write(sir_formatat)
     fileregout.close()
+    

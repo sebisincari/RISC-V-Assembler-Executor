@@ -36,7 +36,6 @@ def decode():
         for i in range (8):
             if cod_bin[index] == '1':
                lun += 2 ** i 
-            print(lun)
             index -= 1
         index += 8
         
@@ -44,11 +43,10 @@ def decode():
         while instructiune not in functii:
             index += 1
             instructiune += cod_bin[index]
-            # print(index)
-        print(instructiune)
         # print(index)
-        functii[instructiune]()
         index += (8 - lun)
+        print(instructiune)
+        functii[instructiune]()
         # apel functie gasita
 
 
@@ -113,9 +111,12 @@ def decIntVal():
                 num += aux
         aux *= 2
         index -= 1
+    
     # print(index)
     if cod_bin[index] == '1':
-        num -= 2**32
+        num -= 2**31
+        #print("plm")
+    #print(num)
     index -= 1
     index += 32
     # print("  " + str(num))
@@ -161,6 +162,18 @@ def readDouble(indexStart, memory):
     # print(indexStart)
     # print(len(cod_bin))
     for i in range(64):
+     
+        if indexStart <= len(memory) - 1:
+            strbytes += memory[indexStart]
+            indexStart += 1
+    return strbytes
+
+
+def readWord(indexStart, memory):
+    strbytes = ""
+    # print(indexStart)
+    # print(len(cod_bin))
+    for i in range(32):
      
         if indexStart <= len(memory) - 1:
             strbytes += memory[indexStart]
@@ -223,6 +236,7 @@ def addi():
 def j():
     global cod_bin
     global index
+    # print(index)
     # print(decIndexJmp(cod_bin))
     index = decIndexJmp() - 1
 
@@ -347,7 +361,64 @@ def lb():
     # print(num)
     writeRegVal(regDest, num)
 
+def ld():
+    global cod_bin
+    # global strByte
+    
+    regDest = decReg()
+    offset = decIntVal()
+    regSursa = decReg()
+    vRegSursa = readRegVal(regSursa)
+    memory = cod_bin[register_file['cml']:]
+    # a0-t1*8
+    # strByte = ""
+    indexByte = (offset + vRegSursa) * 8
+    # print(offset)
+    #print(indexByte)
+    # print(int(vRegSursa))
+    # if indexByte < len(cod_bin):
+    strByte = readDouble(indexByte, memory)
+    # print(strByte)
+    pow2 = 1
+    num = 0
+    # print(strByte)
+    # strByte = strByte[::-1]
+    #print(strByte)
+    for i in range(63, -1, -1):
+        num += pow2 * int(strByte[i])
+        pow2 *= 2
+    # print(num)
+    writeRegVal(regDest, num)
 
+
+def lw():
+    global cod_bin
+    # global strByte
+    
+    regDest = decReg()
+    offset = decIntVal()
+    regSursa = decReg()
+    vRegSursa = readRegVal(regSursa)
+    memory = cod_bin[register_file['cml']:]
+    # a0-t1*8
+    # strByte = ""
+    indexByte = (offset + vRegSursa) * 8
+    #print(indexByte)
+    # print(int(vRegSursa))
+    # if indexByte < len(cod_bin):
+    strByte = readWord(indexByte, memory)
+    pow2 = 1
+    num = 0
+    # print(strByte)
+    # strByte = strByte[::-1]
+    # print(strByte)
+    for i in range(31, -1, -1):
+        num += pow2 * int(strByte[i])
+        pow2 *= 2
+    # print(num)
+    writeRegVal(regDest, num)
+    
+    
 def sb():
     #print("sb")
     # global strByte
@@ -403,46 +474,17 @@ def call():
         strlen()
 
 
-
-def ld():
-    global cod_bin
-    # global strByte
-    
-    regDest = decReg()
-    offset = decIntVal()
-    regSursa = decReg()
-    vRegSursa = readRegVal(regSursa)
-    memory = cod_bin[register_file['cml']:]
-    # a0-t1*8
-    # strByte = ""
-    indexByte = (offset + vRegSursa) * 8
-    #print(indexByte)
-    # print(int(vRegSursa))
-    # if indexByte < len(cod_bin):
-    strByte = readByte(indexByte, memory)
-    print(strByte)
-    pow2 = 1
-    num = 0
-    # print(strByte)
-    # strByte = strByte[::-1]
-    #print(strByte)
-    for i in range(63, -1, -1):
-        num += pow2 * int(strByte[i])
-        pow2 *= 2
-    # print(num)
-    writeRegVal(regDest, num)
-
-
-def lw():
-    return 0
-
-
 def fld():
     return 0
 
 
 def slli():
-    return 0
+    regDest=decReg()
+    regSursa=decReg()
+    vShift=decIntVal()
+    vRegSursa=int(readRegVal(regSursa))
+    vRegDest=vRegSursa<<vShift
+    writeRegVal(regDest, vRegDest)
 
 
 def fsw():
