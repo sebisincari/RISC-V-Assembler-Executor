@@ -14,6 +14,9 @@ Sincari Sebastian-George(143)
 ```
 python3 main.py
 ```
+
+! If the "main.py" script doesn't work, the "assembler.py", "memory-modifier.py" and "executor.py" should be run individually.
+
 ### Example RISC-V Assembly Programs
 https://marz.utk.edu/my-courses/cosc230/book/example-risc-v-assembly-programs/
 
@@ -143,11 +146,11 @@ Memory Layout:
 |   ...         |  <-- (continuation of thr memory)
 ```
 ### Memory
-[ (1023, &16), (2047,&32), (511, NULL) ]
+[(1023, &16), (2047, &32), (511, NULL)]
 ```
 000000000000000000000000000000000000000000000000000000111111111100000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000011111111111000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000001111111110000000000000000000000000000000000000000000000000000000000000000
 ```
-The result will be stored in "a0" and memory.
+The result will be stored in "a0" and RAM.
 
 ## 8. *Reverse a string
 
@@ -167,26 +170,28 @@ The result will be stored in "a0" and memory.
 +---------------+   <-- 0(start of the memory)
 ```
 
-
 ```
 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000010000010000100111010101101110011000010010000001001100011101010110110101100101001000000010000100000000
 ```
-The result should be stored in memory, but due to the lack of time we didn't make it work (but the 'call'
-operation and 'strlen' function works good ).
+The result should be stored in RAM, but due to the lack of time we didn't make it work (but the 'call' operation and 'strlen' function works).
 
 ## How it works:
 ### ---------------------------------------------Assembler----------------------------------------------
 
+The assembler starts by calculating the adresses of each label in a different section of the program with the "label_adress" function, so that it can jump back and forth to a specific label.
+
+After that, in the "write_code" function, the transformation of the instructions from strings to their binary encoded version takes place. This is done by spliting the text into tokens and transforming them into bits. The bits are then stored in a binary file and they represent the machine code.
+
+### ------------------------------------------Memory-Modifier-----------------------------------------
+
+The memory-modifier script is used to append a certain sequence of bits to the machine code. The sequence represents the memory variables.
+
 ### ----------------------------------------------Executor-----------------------------------------------
 
-First step of the execution is storing ram.bin in a string to be easy to work with. After that the 
-decodeing process (lenght of the operation + operation code) and call to that function (every 
-operation from RISC-V code have in executor.py a function with the same name and does the same thing).
+First step of the execution is storing the ram.bin in a string to be easy to work with. After that the decoding process starts(storing the lenght of the instruction and the operation code) and the call of the instruction itself(every instruction from the RISC-V programs has a function in executor.py with the same name and does the same thing).
 
-Each function decodes from the machine code the necessary parameters (registers, numbers or offsets) and
-modify the memory or registers value. At the end of the execution the result is stored in one of them.
+Each instruction is decoded from the machine code with the necessary arguments (registers, numbers or offsets) and after that the memory or registers values are modified. At the end of the execution the result is stored in the RAM or in the registers.
 
-!Memory is indexed from 0 and when you put the adress of an array in a register, calculate it in Bytes !
+!Memory is indexed from 0 and when the adress of an array is put in a register, it should be calculated in Bytes!
 
-An interesting thing in this code is the way we call a function after decoding it and also the management
-of the registers.
+An interesting thing in this code is the way we call a function after decoding it and also the management of the registers.
