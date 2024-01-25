@@ -114,26 +114,25 @@ def write_code(file, assembly_code):
 
 os.system('cls' if os.name == 'nt' else 'clear')
 while True:
-    fisier = input("Ce fisier doriti sa rulati: ")
+    fisier = input("The name of the program: ")
     try:
         with open(f"./code/{fisier}", "r") as file:
             assembly_code = file.read()
         break
     except FileNotFoundError:
         os.system('cls' if os.name == 'nt' else 'clear')
-        print("Fisierul nu exista. Va rugam introduceti un nume de fisier valid.")
+        print("The file doesn't exist. Please enter a valid file.")
 
 label_adress(assembly_code)
-print(labels)
 write_code("ram.bin", assembly_code)
 
 # afisare binar
-print("\nCod Masina:")
+print("\nMachine code:")
 comanda = "xxd ram.bin"
 rezultat = subprocess.run(comanda, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
 print(rezultat.stdout)
 if rezultat.stderr:
-    print("Eroare:", rezultat.stderr)
+    print("Error:", rezultat.stderr)
 
 # cml
 with open('ram.bin', 'rb') as file:

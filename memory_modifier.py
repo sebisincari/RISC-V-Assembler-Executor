@@ -1,4 +1,4 @@
-ram = input("\nIntroduceti varibalie in memoria RAM: ")
+ram = input("\nAdd the variables into the RAM: ")
 
 with open('ram.bin', 'rb') as file:
     binary_data = file.read()

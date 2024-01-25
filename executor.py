@@ -324,6 +324,7 @@ def sb():
     with open('ram.bin', 'wb') as file:
         file.write(bytes(int(cod_bin[i:i+8], 2) for i in range(0, len(cod_bin), 8)))
 
+
 def strlen():
     global cod_bin
     memory = str(cod_bin[register_file['cml']:])
@@ -331,21 +332,33 @@ def strlen():
     vfStiva *= 8
     bazaStiva = register_file['sp']
     bazaStiva *= 8
-    startstr = readDouble(vfStiva-64,memory) 
-    startstr = decDoubleValMem(0,startstr)
-    ibyte = startstr
-    byte = readByte(ibyte,memory)
-    knt = 1
-    while byte != "00000000":
-        ibyte += 8
-        byte = readByte(ibyte,memory)
-        knt +=1
-    writeRegVal("a0",knt)
+    parametru = readDouble(vfStiva - 64,memory)
+    indexx = 0
+    ii = 0
+    for i in range (63,-1,-1):
+        if parametru[i] == '1':
+            indexx += 2**ii
+        ii += 1
+    indexx *= 8
+    currentByte = readByte(index,memory)
+    cnt = 1
+    indexx += 8
+    while currentByte != "00000000":
+        currentByte = readByte(indexx,memory)
+        cnt += 1
+        indexx += 8
+    cnt -= 1
+    register_file['a0'] = cnt
+    
 
 def call():
+    global index
+    global cod_bin
+    index += 8
     binFct=decFct()
     if binFct == "00":
         strlen()
+    index += 6
 
 def fld():
     return 0
